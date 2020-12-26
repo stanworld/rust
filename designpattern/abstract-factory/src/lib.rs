@@ -1,7 +1,11 @@
 // product A
-pub trait Table {
+use downcast_rs::*;
+
+pub trait Table: DowncastSync {
   fn paint(&self);
 }
+
+impl_downcast!(sync Table);
 
 pub struct WhiteTable {
     pub width: u32,
@@ -28,9 +32,12 @@ impl Table for YellowTable {
 }
 
 //product B
-pub trait Chair {
+pub trait Chair: DowncastSync {
     fn sing(&self);
 }
+
+impl_downcast!(sync Chair);
+
 
 pub struct GoodChair {
     weight: f32,
@@ -117,7 +124,6 @@ impl FurnitureFactory for GreenBadFunitureFactory {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::any::Any;
 
     #[test]
     fn it_works() {
@@ -127,8 +133,31 @@ mod tests {
 
         let chair1 = x.create_chair();
         let table1 = x.create_table();
+        
+        let chair2 = y.create_chair();
+        let table2 = y.create_table();
+         
+        // cast to real object from Box<dyn trait> !!!
+        if let Some(chair) = chair1.downcast_ref::<GoodChair>(){
+            assert_eq!(chair.weight,50.1);
+        }
+        else {
+            assert_eq!(0,1);
+        }
+        if let Some(chair) = chair2.downcast_ref::<BadChair>(){
+            assert_eq!(chair.dim.0,200);
+        }
+        else {
+            assert_eq!(1,2);
+        }
 
-        // how to cast chair1 to WhiteGood
+        let res1 = table1.downcast::<WhiteTable>();
+        assert_eq!(res1.is_err(),false);
 
+        let res2 = table2.downcast::<YellowTable>();
+        match res2 {
+            Ok(yellowtable) => assert_eq!(yellowtable.height,40),
+            Err(_) => panic!("Casting failure : it is still a Table"),
+        }
     }
 }
