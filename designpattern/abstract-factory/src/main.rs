@@ -1,13 +1,11 @@
 mod lib;
 
-use lib::WhiteTable;
-
+use lib::GreenBadFunitureFactory;
+use lib::produce;
+use lib::WhiteGoodFunitureFactory;
 fn main() {
-    let num = 10;
-    let x = WhiteTable {
-        width:10,
-        height: 20,
-    };
-
-    println!("Hello, world! {} {}",num, x.width);
+    let x = WhiteGoodFunitureFactory;
+    produce(x);
+    let y = GreenBadFunitureFactory;
+    produce(y);
 }
