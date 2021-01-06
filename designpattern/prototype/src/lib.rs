@@ -3,11 +3,12 @@ use downcast_rs::*;
 
 pub trait Table: DowncastSync {
   fn paint(&self);
-  fn clone(&self) -> Box<dyn Table>;
+  fn self_clone(&self) -> Box<dyn Table>;
 }
 
 impl_downcast!(sync Table);
 
+#[derive(Clone)]
 pub struct WhiteTable {
     pub width: u32,
     pub height: u32,
@@ -18,17 +19,12 @@ impl Table for WhiteTable {
     fn paint(&self) {
         println!("paint {} with a size of {} by {}",self.color,self.width,self.height);
     }
-    fn clone(&self) -> Box<dyn Table> {
-        Box::new(
-            WhiteTable{
-                width: self.width,
-                height: self.height,
-                color:self.color.clone(),
-            }
-        )
+    fn self_clone(&self) -> Box<dyn Table> {
+        Box::new(self.clone())
     }
 }
 
+#[derive(Clone)]
 pub struct YellowTable {
     pub width: u32,
     pub color: String,
@@ -39,26 +35,20 @@ impl Table for YellowTable {
     fn paint(&self) {
         println!("paint {} with a size of {} {}",self.color,self.width,self.height);
     }
-    fn clone(&self) -> Box<dyn Table> {
-        Box::new(
-            YellowTable{
-                width: self.width,
-                height: self.height,
-                color:self.color.clone(),
-            }
-        )
+    fn self_clone(&self) -> Box<dyn Table> {
+        Box::new(self.clone())
     }
 }
 
 //product B
 pub trait Chair: DowncastSync {
     fn sing(&self);
-    fn clone(&self) -> Box<dyn Chair>;
+    fn self_clone(&self) -> Box<dyn Chair>;
 }
 
 impl_downcast!(sync Chair);
 
-
+#[derive(Clone)]
 pub struct GoodChair {
    pub weight: f32,
    pub qoa: String,
@@ -68,16 +58,11 @@ impl Chair for GoodChair {
     fn sing(&self) {
         println!("Sing {} with a weight of {}", self.qoa,self.weight);
     }
-    fn clone(&self) -> Box<dyn Chair> {
-        Box::new(
-            GoodChair {
-                weight: self.weight,
-                qoa: self.qoa.clone(),
-            }
-        )
+    fn self_clone(&self) -> Box<dyn Chair> {
+        Box::new(self.clone())
     }
 }
-
+#[derive(Clone)]
 pub struct BadChair {
    pub weight: f64,
    pub  dim: (u32,u32),
@@ -86,12 +71,9 @@ impl Chair for BadChair {
     fn sing(&self){
         println!("Sing {} with a dim {} by {}", self.weight,self.dim.0,self.dim.1);
     }
-    fn clone(&self) -> Box<dyn Chair> {
+    fn self_clone(&self) -> Box<dyn Chair> {
         Box::new(
-            BadChair{
-                weight: self.weight,
-                dim: self.dim,
-            }
+         self.clone()
         )
     }
 }
@@ -103,10 +85,10 @@ pub struct FurnitureFactory {
 
 impl FurnitureFactory {
     fn create_chair(&self) -> Box<dyn Chair> {
-        self.chair.clone()
+        self.chair.self_clone()
     }
     fn create_table(&self) -> Box<dyn Table> {
-        self.table.clone()
+        self.table.self_clone()
     }
 }
 
