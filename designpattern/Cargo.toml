@@ -3,5 +3,10 @@
 members = [
     "adder",
     "add-one",
-    "abstract-factory"
+    "abstract-factory",
+    "builder",
+    "prototype",
+    "singleton",
+    "adapter",
+    "bridge"
 ]
