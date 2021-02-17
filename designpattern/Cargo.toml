@@ -8,5 +8,6 @@ members = [
     "prototype",
     "singleton",
     "adapter",
-    "bridge"
+    "bridge",
+    "composite"
 ]
