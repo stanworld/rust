@@ -9,5 +9,6 @@ members = [
     "singleton",
     "adapter",
     "bridge",
-    "composite"
+    "composite",
+    "decorator"
 ]
